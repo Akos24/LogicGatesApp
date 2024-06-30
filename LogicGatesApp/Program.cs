@@ -4,10 +4,10 @@
     {
         static void Main(string[] args)
         {
-            string[] logicalGates = RegisterManager.LoadRegisters("./input.txt");
-            LogicGatesManager logicGatesManager = new LogicGatesManager(logicalGates);
+            string[] logicGates = RegisterManager.LoadRegisters("./input.txt");
+            PrintArray(logicGates);
 
-
+            Console.WriteLine(LogicGatesManager.SolveLogicGates(logicGates));
         }
 
         static void PrintArray<T>(T[] array)

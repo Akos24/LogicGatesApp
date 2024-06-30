@@ -3,33 +3,33 @@
     public static class RegisterManager
     {
         /// <summary>
-        /// Loads logical gates from the specified file, determines used registers,
-        /// creates a dictionary of register values, and replaces logical gates with register values.
+        /// Loads logic gates from the specified file, determines used registers,
+        /// creates a dictionary of register values, and replaces logic gates with register values.
         /// </summary>
         /// <param name="fileName">The file name from which to read the data.</param>
-        /// <returns>An updated array of logical gates containing digital values of registers.</returns>
+        /// <returns>An updated array of logic gates containing digital values of registers.</returns>
         public static string[] LoadRegisters(string fileName)
         {
-            // Load logical gates
-            string[] logicalGates = ReadGates(fileName);
+            // Load logic gates
+            string[] logicGates = ReadGates(fileName);
 
             // Determine used registers
-            char[] usedRegisters = DetermineUsedRegisters(logicalGates);
+            char[] usedRegisters = DetermineUsedRegisters(logicGates);
 
             // Create register dictionary based on values found in the file
             Dictionary<char, string> registerValues = CreateRegisterDictionary(fileName, usedRegisters);
 
-            // Replace logical gates with register values
-            string[] newLogicalGates = ReplaceArrayWithDictionaryValues(logicalGates, registerValues);
+            // Replace logic gates with register values
+            string[] newlogicGates = ReplaceArrayWithDictionaryValues(logicGates, registerValues);
 
-            return newLogicalGates;
+            return newlogicGates;
         }
 
         /// <summary>
-        /// Reads the first line from the specified file containing logical gates.
+        /// Reads the first line from the specified file containing logic gates.
         /// </summary>
         /// <param name="fileName">The file name from which to read the data.</param>
-        /// <returns>Array of logical gates.</returns>
+        /// <returns>Array of logic gates.</returns>
         public static string[] ReadGates(string fileName)
         {
             // Read the first line and split by spaces
@@ -38,18 +38,18 @@
         }
 
         /// <summary>
-        /// Determines and returns an array of used registers found in the logical gates.
+        /// Determines and returns an array of used registers found in the logic gates.
         /// </summary>
-        /// <param name="logicalGates">Array of logical gates.</param>
+        /// <param name="logicGates">Array of logic gates.</param>
         /// <returns>Array of used registers.</returns>
-        public static char[] DetermineUsedRegisters(string[] logicalGates)
+        public static char[] DetermineUsedRegisters(string[] logicGates)
         {
             List<char> usedRegisters = new List<char>();
-            foreach (string s in logicalGates)
+            foreach (string logicGate in logicGates)
             {
-                if (s.Length == 1 && char.IsLetter(s[0]))
+                if (logicGate.Length == 1 && char.IsLetter(logicGate[0]))
                 {
-                    usedRegisters.Add(s[0]);
+                    usedRegisters.Add(logicGate[0]);
                 }
             }
 

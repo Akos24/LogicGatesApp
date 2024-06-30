@@ -1,7 +1,7 @@
 ﻿using LogicGatesApp;
 using NUnit.Framework;
 
-namespace LogicalGatesAppTest
+namespace LogicGatesAppTest
 {
     public class RegisterManagerTest
     {
@@ -24,8 +24,8 @@ namespace LogicalGatesAppTest
         [Test]
         public void DetermineUsedRegisters_Test()
         {
-            string[] logicalGates = { "NOT", "AND", "C", "OR", "A", "NOT", "B" };
-            char[] result = RegisterManager.DetermineUsedRegisters(logicalGates);
+            string[] logicGates = { "NOT", "AND", "C", "OR", "A", "NOT", "B" };
+            char[] result = RegisterManager.DetermineUsedRegisters(logicGates);
 
             Assert.That(result, Is.EqualTo(new char[] { 'C', 'A', 'B' }));
         }
