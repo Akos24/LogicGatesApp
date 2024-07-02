@@ -3,73 +3,164 @@ using NUnit.Framework;
 
 namespace LogicGatesAppTest
 {
+    [TestFixture]
     public class RegisterManagerTest
     {
         [Test]
-        public void LoadRegisters_Test()
+        public void TestReadGates_ValidFile_ReturnsGates()
         {
-            string[] result = RegisterManager.LoadRegisters("./test_file_1.txt");
+            // Arrange
+            string testFilePath = "test_file.txt";
+            File.WriteAllText(testFilePath, "AND 10101 11011\n");
 
-            Assert.That(result, Is.EqualTo(new string[] { "NOT", "AND", "00E11", "OR", "0101E", "NOT", "00000" }));
+            // Act
+            string[] result = RegisterManager.ReadGates(testFilePath);
+
+            // Assert
+            Assert.That(result, Is.EqualTo(new string[] { "AND", "10101", "11011" }));
+
+            // Clean up
+            File.Delete(testFilePath);
         }
 
         [Test]
-        public void ReadGates_Test()
+        public void TestDetermineUsedRegisters_ValidGates_ReturnsUsedRegisters()
         {
-            string[] result = RegisterManager.ReadGates("./test_file_1.txt");
+            // Arrange
+            string[] logicGates = { "A", "B", "AND", "C", "D" };
 
-            Assert.That(result, Is.EqualTo(new string[] { "NOT", "AND", "C", "OR", "A", "NOT", "B" }));
-        }
-
-        [Test]
-        public void DetermineUsedRegisters_Test()
-        {
-            string[] logicGates = { "NOT", "AND", "C", "OR", "A", "NOT", "B" };
+            // Act
             char[] result = RegisterManager.DetermineUsedRegisters(logicGates);
 
-            Assert.That(result, Is.EqualTo(new char[] { 'C', 'A', 'B' }));
+            // Assert
+            Assert.That(result, Is.EqualTo(new char[] { 'A', 'B', 'C', 'D' }));
         }
 
         [Test]
-        public void CreateRegisterDictionary_Test()
+        public void TestCreateRegisterDictionary_ValidFile_ReturnsRegisterDictionary()
         {
-            string fileName = "./test_file_1.txt";
-            char[] usedRegisters = { 'C', 'A', 'B' };
+            // Arrange
+            string testFilePath = "test_file.txt";
+            File.WriteAllText(testFilePath, "NOR A B\nA 0028033517\nB 0001020304\n");
 
-            Dictionary<char, string> result = RegisterManager.CreateRegisterDictionary(fileName, usedRegisters);
+            char[] usedRegisters = { 'A', 'B' };
 
-            Assert.That(result, Is.EqualTo(new Dictionary<char, string>
+            // Act
+            Dictionary<char, string> result = RegisterManager.CreateRegisterDictionary(testFilePath, usedRegisters);
+
+            // Assert
+            var expectedDictionary = new Dictionary<char, string>
             {
-                { 'C', "00E11" },
-                { 'B', "00000" },
-                { 'A', "0101E" }
-            }));
-        }
-
-        [Test]
-        public void ConvertToDigitalSignal_Test()
-        {
-            string signal = "0205094150";
-
-            string result = RegisterManager.ConvertToDigitalSignal(signal);
-
-            Assert.That(result, Is.EqualTo("00E11"));
-        }
-
-        [Test]
-        public void ReplaceArrayWithDictionaryValues_Test()
-        {
-            string[] array = { "NOT", "AND", "C", "OR", "A", "NOT", "B" };
-            Dictionary<char, string> dictionary = new Dictionary<char, string>
-            {
-                { 'C', "00E11" },
-                { 'B', "00000" },
-                { 'A', "0101E" }
+                { 'A', "0101E" },
+                { 'B', "00000" }
             };
 
+            Assert.That(result, Is.EquivalentTo(expectedDictionary));
+
+            // Clean up
+            File.Delete(testFilePath);
+        }
+
+        [Test]
+        public void TestConvertToDigitalSignal_ValidSignal_ReturnsDigitalSignal()
+        {
+            // Arrange
+            string signal = "0028033517";
+
+            // Act
+            string result = RegisterManager.ConvertToDigitalSignal(signal);
+
+            // Assert
+            Assert.That(result, Is.EqualTo("0101E"));
+        }
+
+        [Test]
+        public void TestReplaceArrayWithDictionaryValues_ValidInput_ReturnsUpdatedArray()
+        {
+            // Arrange
+            string[] array = { "A", "B", "AND", "C" };
+            var dictionary = new Dictionary<char, string>
+            {
+                { 'A', "10101" },
+                { 'B', "11011" }
+            };
+
+            // Act
             string[] result = RegisterManager.ReplaceArrayWithDictionaryValues(array, dictionary);
 
-            Assert.That(result, Is.EqualTo(new string[] { "NOT", "AND", "00E11", "OR", "0101E", "NOT", "00000" }));
+            // Assert
+            Assert.That(result, Is.EqualTo(new string[] { "10101", "11011", "AND", "C" }));
+        }
+
+        [Test]
+        public void TestLoadRegisters_ValidFile_ReturnsUpdatedGates()
+        {
+            // Arrange
+            string testFilePath = "test_file.txt";
+            File.WriteAllText(testFilePath, "AND A B\nA 5000353000\nB 0050270050\n");
+
+            // Act
+            string[] result = RegisterManager.LoadRegisters(testFilePath);
+
+            // Assert
+            Assert.That(result, Is.EqualTo(new string[] { "AND", "10110", "01101" }));
+
+            // Clean up
+            File.Delete(testFilePath);
+        }
+
+        [Test]
+        public void TestReadGates_InvalidFile_ThrowsException()
+        {
+            // Arrange
+            string testFilePath = "invalid_file.txt";
+
+            // Act & Assert
+            Assert.That(() => RegisterManager.ReadGates(testFilePath), Throws.TypeOf<FileNotFoundException>());
+        }
+
+        [Test]
+        public void TestCreateRegisterDictionary_InvalidLineFormat_ThrowsException()
+        {
+            // Arrange
+            string testFilePath = "test_file.txt";
+            File.WriteAllText(testFilePath, "AND 10101 11011\nA 5.0 0.0 3.3 5.0\n");
+
+            char[] usedRegisters = { 'A' };
+
+            // Act & Assert
+            Assert.That(() => RegisterManager.CreateRegisterDictionary(testFilePath, usedRegisters), Throws.TypeOf<IncorrectFileFormatException>());
+
+            // Clean up
+            File.Delete(testFilePath);
+        }
+
+        [Test]
+        public void TestConvertToDigitalSignal_InvalidLength_ThrowsException()
+        {
+            // Arrange
+            string signal = "5.00.03.3";
+
+            // Act & Assert
+            Assert.That(() => RegisterManager.ConvertToDigitalSignal(signal), Throws.TypeOf<IncorrectFileFormatException>());
+        }
+
+        [Test]
+        public void TestReplaceArrayWithDictionaryValues_ElementNotInDictionary_RemainsUnchanged()
+        {
+            // Arrange
+            string[] array = { "C", "AND", "D" };
+            var dictionary = new Dictionary<char, string>
+            {
+                { 'A', "10101" },
+                { 'B', "11011" }
+            };
+
+            // Act
+            string[] result = RegisterManager.ReplaceArrayWithDictionaryValues(array, dictionary);
+
+            // Assert
+            Assert.That(result, Is.EqualTo(new string[] { "C", "AND", "D" }));
         }
     }
 }
