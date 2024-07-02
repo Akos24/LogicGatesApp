@@ -1,19 +1,19 @@
-## LogicGatesApp
+# LogicGatesApp
 
-# Overview
+## Overview
 LogicGatesApp is a command-line application built in C# that simulates digital logic gates operations based on input files. It allows loading logic gates configurations, resolving register values, and performing various logic operations like AND, OR, NOT, etc.
 
-# Features
+## Features
 Load Logic Gates: Reads logic gates configurations from a specified input file.
 Resolve Register Values: Processes register values based on the loaded configurations.
 Perform Logic Operations: Supports operations such as AND, OR, NOT, NAND, NOR, XOR, XNOR.
 Output Results: Displays the computed results of logic gate operations.
 
-# Installation
+## Installation
 To run the LogicGatesApp, ensure you have the following:
 - .NET Core SDK installed on your machine. You can download it from dot.net.
 
-# Usage
+## Usage
 1. Clone the Repository:
 git clone https://github.com/Akos24/LogicGatesApp.git
 
@@ -33,7 +33,7 @@ C 0205094150
 B 0001020304
 A 0028033517
 
-# How it works
+## How it works
 The application converts the voltage signals assigned to the registers into digital signals.
 If the signal is between 0 V and 0.8 V the digital value is 0, if it's between 2.7 V and 5 V the digital value is 0. Othrwise the digital value is 'E' as error
 C -> 0.2, 0.5, 0.9, 4.1, 5.0 -> 00E11
@@ -47,8 +47,8 @@ The gates solve the expression based on the logic of logic gates.
 => NOT 00E1E
 => 11E0E
 
-# Contributing
+## Contributing
 Contributions are welcome! If you have suggestions, feature requests, or want to report issues, please create an issue or submit a pull request.
 
-# License
+## License
 This project is licensed under the MIT License - see the LICENSE file for details.
